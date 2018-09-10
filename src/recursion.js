@@ -514,11 +514,37 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+  var total = 0;
+  // for (var key in obj) {
+  //   if (obj[key] !== value) {
+  //     total += 0;
+  //   }
+  // }
+  if (typeof obj === 'object' && (!Array.isArray(obj))) {
+    for (var key in obj) {
+      if (obj[key] === value) {
+        total += 1 + countValuesInObj(obj[key], value);
+      } else {
+        total += countValuesInObj(obj[key], value);
+      }
+    }
+  }
+  return total;
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+	  if (obj.hasOwnProperty(oldKey)) {
+    obj[newKey] = obj[oldKey];
+    delete obj[oldKey];
+  }
+  for (var key in obj) {
+    if (typeof obj[key] === 'object' && (!Array.isArray(obj[key]))) {
+      replaceKeysInObj(obj[key], oldKey, newKey);
+    }
+  };
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
@@ -527,6 +553,15 @@ var replaceKeysInObj = function(obj, oldKey, newKey) {
 // fibonacci(5); // [0,1,1,2,3,5]
 // Note: The 0 is not counted.
 var fibonacci = function(n) {
+	  if (n ===1) {
+    return [0, 1];
+  } else if ( n === 2) {
+     return fibonacci(n - 1).concat([1]);
+  } else if (n > 2) {
+    return [fibonacci(n - 2)].concat(fibonacci(n - 1));
+  } else if (n <= 0) {
+    return null;
+  }
 };
 
 // 26. Return the Fibonacci number located at index n of the Fibonacci sequence.
@@ -535,17 +570,49 @@ var fibonacci = function(n) {
 // nthFibo(7); // 13
 // nthFibo(3); // 2
 var nthFibo = function(n) {
+	  if (n < 0) {
+    return null;
+  } else if (n === 0) {
+    return 0;
+  } else if (n ===1 || n === 2) {
+    return 1;
+  } else {
+    return nthFibo(n - 1) + nthFibo(n - 2);
+  }
 };
 
 // 27. Given an array of words, return a new array containing each word capitalized.
 // var words = ['i', 'am', 'learning', 'recursion'];
 // capitalizedWords(words); // ['I', 'AM', 'LEARNING', 'RECURSION']
 var capitalizeWords = function(array) {
+	  //for (var i = 0; i < array.length-1; i ++) {
+    if (array.length === 0) {
+      return [];
+    }
+    //return arr.concat(capitalizeWords(array[1, array.length])); 
+    return [array[0].toUpperCase()].concat(capitalizeWords(array.slice(1, array.length))); 
+
+  //} 
 };
 
 // 28. Given an array of strings, capitalize the first letter of each index.
 // capitalizeFirst(['car','poop','banana']); // ['Car','Poop','Banana']
 var capitalizeFirst = function(array) {
+	  if (array.length === 0) {
+    return [];
+  }
+  // for (var i = 0; i < array.length; i ++) {
+  //   if (typeof array[i] === 'string') {
+  //     var string = array[i][0].toUpperCase() + array[i].slice(1, array.length);
+  //     console.log(string);
+  //   }
+  // }
+    //for (var i = 0; i < array.length; i ++) {
+    if (typeof array[0] === 'string') {
+      var string = [array[0][0].toUpperCase() + array[0].slice(1, array[0].length)];
+      return string.concat(capitalizeFirst(array.slice(1, array.length)));
+    }
+  //}
 };
 
 // 29. Return the sum of all even numbers in an object containing nested objects.
@@ -558,11 +625,35 @@ var capitalizeFirst = function(array) {
 // };
 // nestedEvenSum(obj1); // 10
 var nestedEvenSum = function(obj) {
+	  var total = 0;
+  for (var key in obj) {
+    if (typeof obj[key] === 'object' && (!Array.isArray(obj[key]))) {
+      total += nestedEvenSum(obj[key]);
+    } else if (obj[key] % 2 === 0) {
+      total += obj[key];
+    }
+  }
+  return total;
 };
 
 // 30. Flatten an array containing nested arrays.
 // flatten([1,[2],[3,[[4]]],5]); // [1,2,3,4,5]
 var flatten = function(array) {
+	  //var arr = [];
+  // for (var i = 0; i <array.length -1; i ++) {
+  //   if (Array.isArray(array[i])) {
+  //     flatten(array[i]);
+  //   } else {
+  //     array[0].concat(flatten(array.slice(1, array.length)));
+  //   }
+  // }
+  if (array.length === 0) {
+    return [];
+  }
+  if (Array.isArray(array[0])) {
+    return flatten(array[0]).concat(flatten(array.slice(1, array.length)));
+  }
+  return [array[0]].concat(flatten(array.slice(1, array.length)));
 };
 
 // 31. Given a string, return an object containing tallies of each letter.
