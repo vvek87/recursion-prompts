@@ -410,12 +410,27 @@ var createArray = function(str) {
 
 // 17. Reverse the order of an array
 var reverseArr = function(array) {
+	var results = [];
+
+	if (array.length === 1) {
+		return array;
+	}
+	results.push(array.pop());
+	return results.concat(reverseArr(array));
+
 };
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
 var buildList = function(value, length) {
+  var results = [];
+
+  if (length === 1) {
+    return [value];
+  }
+  results.push(value);
+  return results.concat(buildList(value, length - 1));
 };
 
 // 19. Implement FizzBuzz. Given integer n, return an array of the string representations of 1 to n.
@@ -423,25 +438,75 @@ var buildList = function(value, length) {
 // For multiples of five, output 'Buzz' instead of the number.
 // For numbers which are multiples of both three and five, output “FizzBuzz” instead of the number.
 // fizzBuzz(5) // ['1','2','Fizz','4','Buzz']
+
 var fizzBuzz = function(n) {
+  var results = [];
+  var str;
+
+  if (n === 1) {
+    console.log(n)
+  	return [n + ''];
+  }
+  if (n % 3 === 0 && n % 5 === 0) {
+  	str = 'FizzBuzz'
+  } else if (n % 5 === 0) {
+  	str = 'Buzz';
+  } else if (n % 3 === 0) {
+  	str = 'Fizz';
+  } else {
+  	str = n + '';
+  }
+  var mainStr = fizzBuzz(n - 1).join(',');
+  var mainArray = mainStr + ',' + str;
+  return mainArray.split(','); //[1,2,'fizz']
 };
 
 // 20. Count the occurence of a value in a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
 // countOccurrence([2,'banana',4,4,1,'banana'], 'banana') // 2
 var countOccurrence = function(array, value) {
+  var result = 0;
+
+  if (array.length === 0) {
+  	return 0;
+  }
+  if (array[0] === value) {
+  	result++;
+  }
+  array.shift();
+  return result + countOccurrence(array, value);
 };
 
 // 21. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
 var rMap = function(array, callback) {
+	var slicedArray = array.slice();
+  var results = [];
+
+  if (slicedArray.length === 0) {
+  	return array;
+  }
+  results.push(callback(slicedArray.shift()))
+  return results.concat(rMap(slicedArray, callback));
+
+
 };
 
 // 22. Write a function that counts the number of times a key occurs in an object.
-// var obj = {'e':{'x':'y'},'t':{'r':{'e':'r'},'p':{'y':'r'}},'y':'e'};
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 var countKeysInObj = function(obj, key) {
+	var result = 0;
+
+	for (var keyName in obj) {
+		if (keyName === key) {
+			result++;
+		}
+		if (typeof obj[keyName] === 'object') {
+			result += countKeysInObj(obj[keyName], key)
+		}
+	}
+  return result;
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
